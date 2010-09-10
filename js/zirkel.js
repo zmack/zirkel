@@ -3,7 +3,8 @@
   var context = canvas.getContext('2d');
   var circle = Math.PI * 2;
   var buffer = document.createElement('div');
-  var baseColors = ['#F00', '#0F0', '#00F'];
+  var base_colors = ['#F00', '#0F0', '#00F'];
+  var last_value = null;
 
   function drawCircle(x, y, color, start, length, total) {
     start = start || 0;
@@ -32,30 +33,31 @@
     return colors.split(', ').map(function(e) { return parseInt(e, 10) });
   }
 
-  var form = document.getElementById('form');
-  var colorElement = document.getElementById('color');
-
-  form.addEventListener('submit', function(e) {
-    e.preventDefault();
-    var colors = breakColor(colorElement.value);
+  function drawColorBreakdown(color) {
+    var colors = breakColor(color);
     var total = colors.reduce(function(before, now) { return before + now });
 
-    var green = colors[0] + colors[1];
-    var blue = colors[0] + colors[1];
-
     context.clearRect(0, 0, canvas.width, canvas.height);
-    fillCircle(100, 100, colorElement.value);
+    fillCircle(100, 100, color);
 
     colors.unshift(0);
     colors.reduce( function(last, current, index) {
       if ( current != 0 ) {
-        drawCircle(100, 100, baseColors[index-1], last, current, total);
+        drawCircle(100, 100, base_colors[index-1], last, current, total);
       }
 
       return last + current;
     });
+  }
 
-    console.log(colors);
+  var form = document.getElementById('form');
+  var color_element = document.getElementById('color');
+
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    drawColorBreakdown(color_element.value);
+
+    last_color = breakColor(color_element.value);
   }, false);
 
 })();
