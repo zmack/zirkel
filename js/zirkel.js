@@ -43,12 +43,11 @@
 
     var timer = setInterval(function() {
       current_frame += 1;
-      frame_colors[1] = last_color[0] - ~~(r_step * current_frame);
-      frame_colors[2] = last_color[1] - ~~(g_step * current_frame);
-      frame_colors[3] = last_color[2] - ~~(b_step * current_frame);
-      fillCircle(100, 100, 'rgb( '+frame_colors[1] + ',' + frame_colors[2] + ',' + frame_colors[3] + ')');
+      frame_colors[1] = last_color[0] - (r_step * current_frame);
+      frame_colors[2] = last_color[1] - (g_step * current_frame);
+      frame_colors[3] = last_color[2] - (b_step * current_frame);
+      fillCircle(100, 100, 'rgb('+~~frame_colors[1] + ',' + ~~frame_colors[2] + ',' + ~~frame_colors[3] + ')');
       drawColorBreakdown(frame_colors)
-      console.log(frame_colors);
       if ( current_frame == 100 ) {
         clearInterval(timer);
       }
@@ -66,7 +65,7 @@
     var total = colors.reduce(function(before, now) { return before + now });
 
     context.clearRect(0, 0, canvas.width, canvas.height);
-    fillCircle(100, 100, color);
+    fillCircle(100, 100, 'rgb('+~~colors[1] + ',' + ~~colors[2] + ',' + ~~colors[3] + ')');
 
     colors.reduce( function(last, current, index) {
       if ( current != 0 ) {
