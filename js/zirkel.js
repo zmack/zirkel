@@ -7,7 +7,8 @@
   var last_color = null;
   var animating = false;
 
-  function drawCircle(x, y, color, start, length, total) {
+  function drawCircle(x, y, radius, color, start, length, total) {
+    radius = radius || 90;
     start = start || 0;
     total = total || 1;
     length = length || 1;
@@ -15,7 +16,7 @@
     context.lineWidth = 20;
     context.strokeStyle = color;
     context.beginPath();
-    context.arc(x, y, 90, start * growth, (start + length ) * growth, false)
+    context.arc(x, y, radius, start * growth, (start + length ) * growth, false)
     context.stroke();
     context.closePath();
   }
@@ -48,7 +49,7 @@
       frame_colors[1] = last_color[0] - (r_step * current_frame);
       frame_colors[2] = last_color[1] - (g_step * current_frame);
       frame_colors[3] = last_color[2] - (b_step * current_frame);
-      fillCircle(100, 100, 'rgb('+~~frame_colors[1] + ',' + ~~frame_colors[2] + ',' + ~~frame_colors[3] + ')');
+      fillCircle(100, 100, formColor(frame_colors));
       drawColorBreakdown(frame_colors)
       if ( current_frame == 100 ) {
         animating = false;
@@ -68,15 +69,19 @@
     var total = colors.reduce(function(before, now) { return before + now });
 
     context.clearRect(0, 0, canvas.width, canvas.height);
-    fillCircle(100, 100, 'rgb('+~~colors[1] + ',' + ~~colors[2] + ',' + ~~colors[3] + ')');
+    fillCircle(100, 100, formColor(colors));
 
     colors.reduce( function(last, current, index) {
       if ( current != 0 ) {
-        drawCircle(100, 100, base_colors[index-1], last, current, total);
+        drawCircle(100, 100, 90, base_colors[index-1], last, current, total);
       }
 
       return last + current;
     });
+  }
+
+  function formColor(colors) {
+    return 'rgb('+~~colors[1] + ',' + ~~colors[2] + ',' + ~~colors[3] + ')'
   }
 
   var form = document.getElementById('form');
@@ -85,11 +90,14 @@
   form.addEventListener('submit', function(e) {
     e.preventDefault();
     var this_color = breakColor(color_element.value);
+
     if ( last_color != null && animating == false ) {
       animateBreakDown(last_color, this_color);
     }
 
     //drawColorBreakdown(color_element.value);
+    //drawCircle(250, 25, 10, formColor(last_color)); 
+    //drawCircle(270, 25, 10, formColor(this_color)); 
 
     last_color = breakColor(color_element.value);
   }, false);
