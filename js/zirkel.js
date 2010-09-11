@@ -5,6 +5,7 @@
   var buffer = document.createElement('div');
   var base_colors = ['#F00', '#0F0', '#00F'];
   var last_color = null;
+  var animating = false;
 
   function drawCircle(x, y, color, start, length, total) {
     start = start || 0;
@@ -40,6 +41,7 @@
     var r_step = (last_color[0] - this_color[0]) / total_frames;
     var g_step = (last_color[1] - this_color[1]) / total_frames;
     var b_step = (last_color[2] - this_color[2]) / total_frames;
+    animating = true;
 
     var timer = setInterval(function() {
       current_frame += 1;
@@ -49,6 +51,7 @@
       fillCircle(100, 100, 'rgb('+~~frame_colors[1] + ',' + ~~frame_colors[2] + ',' + ~~frame_colors[3] + ')');
       drawColorBreakdown(frame_colors)
       if ( current_frame == 100 ) {
+        animating = false;
         clearInterval(timer);
       }
     }, 30);
@@ -82,7 +85,7 @@
   form.addEventListener('submit', function(e) {
     e.preventDefault();
     var this_color = breakColor(color_element.value);
-    if ( last_color != null ) {
+    if ( last_color != null && animating == false ) {
       animateBreakDown(last_color, this_color);
     }
 
